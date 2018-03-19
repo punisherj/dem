@@ -11,7 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 @Component
-public class ExcelUtil {
+public class ExcelUtils {
 
     public XSSFWorkbook getWorkbook(File f) {
         XSSFWorkbook workbook = null;

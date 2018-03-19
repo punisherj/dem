@@ -1,6 +1,6 @@
 package com.bonc.dem.config;
 
-import com.bonc.dem.util.DateUtil;
+import com.bonc.dem.util.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class ExcelConfig {
 
     public String getAttachmentName(Date date) {
         //return attachmentName;
-        return String.format(attachmentName, DateUtil.parseDateToStr(date, DateUtil.DATE_FORMAT_YYMMDD));
+        return String.format(attachmentName, DateUtils.parseDateToStr(date, DateUtils.DATE_FORMAT_YYMMDD));
     }
     public String getAttachmentName() {
         return attachmentName.replace("%s.xlsx","");

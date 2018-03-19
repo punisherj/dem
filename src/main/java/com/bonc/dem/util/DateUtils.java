@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * 日期工具类
  */
-public class DateUtil {
+public class DateUtils {
 
     // ==格式到年==
     /**
@@ -654,7 +654,7 @@ public class DateUtil {
         }
 
         if (date != null) {
-            System.out.println("生成的日期:" + DateUtil.parseDateToStr(date, DateUtil.DATE_TIME_FORMAT_YYYY_MM_DD_HH_MI_SS, "--null--"));
+            System.out.println("生成的日期:" + DateUtils.parseDateToStr(date, DateUtils.DATE_TIME_FORMAT_YYYY_MM_DD_HH_MI_SS, "--null--"));
             return true;
         }
         return false;

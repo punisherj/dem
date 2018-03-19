@@ -1,11 +1,10 @@
 package com.bonc.dem.task;
 
-import com.bonc.dem.config.ExcelConfig;
 import com.bonc.dem.config.MailConfig;
 import com.bonc.dem.service.AsyncTaskService;
 import com.bonc.dem.service.ExcelService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.bonc.dem.service.OrderCollectService;
+import com.bonc.dem.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DefaultTask {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private AsyncTaskService asyncTaskService;
@@ -23,12 +21,13 @@ public class DefaultTask {
 
     @Autowired
     private MailConfig mailConfig;
+
     @Autowired
-    private ExcelConfig excelConfig;
+    private OrderCollectService orderCollectService;
 
     @Scheduled(cron = "${cron}")
     public void task() {
-        excelService.record();
+        excelService.record(orderCollectService.getExcelData(DateUtils.parseStrToDate("20170711", DateUtils.DATE_FORMAT_YYYYMMDD),2));
         for (String toMail : mailConfig.getToMail()) {
             asyncTaskService.executeAsyncTask(toMail);
         }
