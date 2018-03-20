@@ -17,9 +17,6 @@ public class MailConfig {
     @Value("${mail.subject}")
     private String subject;
 
-    @Value("${mail.content}")
-    private String content;
-
     public String getFromMail() {
         return fromMail;
     }
@@ -42,13 +39,5 @@ public class MailConfig {
 
     public void setSubject(String subject) {
         this.subject = subject;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 }
