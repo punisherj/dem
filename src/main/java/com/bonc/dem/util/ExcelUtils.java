@@ -25,6 +25,11 @@ public class ExcelUtils {
     }
 
     public void createExcel(XSSFWorkbook workbook, String path) {
+
+        if (!new File(path).exists()) {
+            new File(path.substring(0, path.lastIndexOf('/'))).mkdirs();
+        }
+
         try {
             FileOutputStream out = new FileOutputStream(path);
             workbook.write(out);
@@ -85,18 +90,18 @@ public class ExcelUtils {
         return ztStyle;
     }
 
-    public XSSFCell setCellValue(XSSFRow row, Integer index, Object value){
+    public XSSFCell setCellValue(XSSFRow row, Integer index, Object value) {
         //全省总量
         XSSFCell cell = row.getCell(index);
         if (null == cell) {
             cell = row.createCell(index);
         }
-        if(value instanceof Double){
-            cell.setCellValue((double)value);
-        }else if (value instanceof Integer){
-            cell.setCellValue((Integer)value);
-        }else {
-            cell.setCellValue((String)value);
+        if (value instanceof Double) {
+            cell.setCellValue((double) value);
+        } else if (value instanceof Integer) {
+            cell.setCellValue((Integer) value);
+        } else {
+            cell.setCellValue((String) value);
         }
         return cell;
     }

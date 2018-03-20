@@ -10,17 +10,17 @@ import java.util.List;
 public interface ShopOrderRepository extends JpaRepository<ShopOrderEntity, BigInteger> {
 
     @Query(value =
-            "SELECT t.owner , count(*) " +
+            "SELECT t.area_name , count(*) " +
                     "FROM oc_shop_order t " +
-                    "WHERE DATE_FORMAT(t.prov_order_time , '%Y%m%d') = ?1 AND t.cb_order_status_code = ?2 AND t.owner IS NOT NULL " +
-                    "GROUP BY DATE_FORMAT(t.create_date , '%Y%m%d'), t.owner",
+                    "WHERE DATE_FORMAT(t.prov_order_time , '%Y%m%d') = ?1 AND t.cb_order_status_code = ?2 " +
+                    "GROUP BY DATE_FORMAT(t.create_date , '%Y%m%d'), t.area_name",
             nativeQuery = true)
-    List<Object[]> kaihuSucess(String time, Integer code);
+    List<Object[]> createAccountSuccess(String time, Integer code);
 
     @Query(value =
-            " SELECT SUM(aaa.cc), aaa.owner, dd FROM ( " +
+            " SELECT SUM(aaa.cc), aaa.area_name, dd FROM ( " +
                     " SELECT " +
-                        " a.owner, " +
+                        " a.area_name, " +
                         " MAX(a.cb_order_status_code) , " +
                         " COUNT(*) cc ," +
                         " DATE_FORMAT(a.prov_order_time , '%Y%m%d') dd " +
@@ -29,10 +29,10 @@ public interface ShopOrderRepository extends JpaRepository<ShopOrderEntity, BigI
                         " AND a.cb_order_status_code <> ?2" +
                     " GROUP BY" +
                         " DATE_FORMAT(a.prov_order_time , '%Y%m%d') ," +
-                        " a.owner" +
+                        " a.area_name" +
                         " UNION ALL " +
                         " SELECT " +
-                        " a.owner ," +
+                        " a.area_name ," +
                         " MAX(a.cb_order_status_code) ," +
                         " COUNT(*) cc ," +
                         " DATE_FORMAT(a.prov_order_time , '%Y%m%d') " +
@@ -41,13 +41,13 @@ public interface ShopOrderRepository extends JpaRepository<ShopOrderEntity, BigI
                         "AND a.cb_order_status_code = '-1'" +
                     " GROUP BY " +
                         " DATE_FORMAT(a.prov_order_time , '%Y%m%d') , " +
-                        " a.owner " +
+                        " a.area_name " +
                     " ) aaa " +
                     " GROUP BY " +
-                    " aaa.owner, " +
+                    " aaa.area_name, " +
                     " dd " +
                     " ORDER BY " +
                     "dd",
             nativeQuery = true)
-    List<Object[]> kaihuFail(String time, Integer code);
+    List<Object[]> createAccountFail(String time, Integer code);
 }

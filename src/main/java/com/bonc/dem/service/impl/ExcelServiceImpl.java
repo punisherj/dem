@@ -4,9 +4,9 @@ import com.bonc.dem.config.ExcelConfig;
 import com.bonc.dem.enumc.City;
 import com.bonc.dem.pojo.ExcelPojo;
 import com.bonc.dem.service.ExcelService;
+import com.bonc.dem.util.AttachmentUtils;
 import com.bonc.dem.util.DateUtils;
 import com.bonc.dem.util.ExcelUtils;
-import com.bonc.dem.util.FileUtil;
 import com.bonc.dem.util.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.Date;
 import java.util.Map;
 
@@ -41,11 +42,12 @@ public class ExcelServiceImpl implements ExcelService {
     @Override
     public void record(Map map) {
 
-        if (!FileUtil.isAttachmentExist(excelConfig.getAttachmentName(DateUtils.getYesterday()))) {
-            workbook = excelUtil.getWorkbook(FileUtil.getResourceDir("templates/" + excelConfig.getTemplatesName()));
+        if (!AttachmentUtils.isFileExist(excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(DateUtils.getYesterday()))) {
+            workbook = excelUtil.getWorkbook(AttachmentUtils.getResourceDir("templates/" + excelConfig.getTemplatesName()));
             excelUtil.getNewSheet(workbook, String.format("%d月订单生产量明细", DateUtils.getMonth(new Date())));
         } else {
-            workbook = excelUtil.getWorkbook(FileUtil.getResourceDir("attachment/" + excelConfig.getAttachmentName(DateUtils.getYesterday())));
+            //workbook = excelUtil.getWorkbook(AttachmentUtils.getResourceDir("attachment/" + excelConfig.getAttachmentName(DateUtils.getYesterday())));
+            workbook = excelUtil.getWorkbook(new File(excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(DateUtils.getYesterday())));
         }
 
         //获取日期判断是本月第一天就新起sheet
@@ -55,8 +57,7 @@ public class ExcelServiceImpl implements ExcelService {
 
         //获取最后一页的最后一行 写入
         data2Excel(workbook.getSheetAt(workbook.getNumberOfSheets() - 1), map);
-        excelUtil.createExcel(workbook, String.format("%s\\%s", FileUtil.getResourceDir("attachment"), excelConfig.getAttachmentName(new Date())));
-
+        excelUtil.createExcel(workbook, excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(new Date()));
     }
 
     private void data2Excel(XSSFSheet sheet, Map<String, ExcelPojo> map) {
@@ -68,16 +69,6 @@ public class ExcelServiceImpl implements ExcelService {
 
         int proCount = 0;
         int proSuccess = 0;
-
-        //for (Map.Entry<String, ExcelPojo> entry : map.entrySet()) {
-        //    for(City city : City.values()){
-        //        if(StringUtils.equals(entry.getKey(), city.getValue())){
-        //            this.setValue(row, city.getIndex(), entry.getValue().getAmount(), entry.getValue().getSuccess());
-        //            proCount += entry.getValue().getAmount();
-        //            proSuccess += entry.getValue().getSuccess();
-        //        }
-        //    }
-        //}
 
         for(City city : City.values()){
             this.setValue(row, city.getIndex(), 0, 0);

@@ -3,7 +3,6 @@ package com.bonc.dem.service.impl;
 import com.bonc.dem.config.ExcelConfig;
 import com.bonc.dem.config.MailConfig;
 import com.bonc.dem.service.MailService;
-import com.bonc.dem.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,14 +63,14 @@ public class MailServiceImpl implements MailService {
             helper.setSubject(subject);
             helper.setText(content, true);
 
-            //File[] fileArrays = FileUtil.getAttachDir().listFiles();
+            //File[] fileArrays = AttachmentUtils.getAttachDir().listFiles();
             //for (File attachment : fileArrays) {
             //    FileSystemResource file = new FileSystemResource(new File(attachment.getAbsolutePath()));
             //    String fileName = attachment.getName();
             //    helper.addAttachment(fileName, file);
             //}
 
-            File attachment = new File(String.format("%s\\%s", FileUtil.getResourceDir("attachment"), excelConfig.getAttachmentName(new Date())));
+            File attachment = new File(excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(new Date()));
             FileSystemResource file = new FileSystemResource(new File(attachment.getAbsolutePath()));
             String fileName = attachment.getName();
             helper.addAttachment(fileName, file);

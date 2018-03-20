@@ -17,6 +17,9 @@ public class ExcelConfig {
     @Value("${attachment.name}")
     private String attachmentName;
 
+    @Value("${attachment.path}")
+    private String attachmentPath;
+
     public String getTemplatesName() {
         return templatesName;
     }
@@ -35,5 +38,16 @@ public class ExcelConfig {
 
     public void setAttachmentName(String attachment) {
         this.attachmentName = attachmentName;
+    }
+
+    public String getAttachmentPath() {
+        if (attachmentPath.length() != attachmentPath.lastIndexOf('/')) {
+            attachmentPath += "/";
+        }
+        return attachmentPath;
+    }
+
+    public void setAttachmentPath(String attachmentPath) {
+        this.attachmentPath = attachmentPath;
     }
 }

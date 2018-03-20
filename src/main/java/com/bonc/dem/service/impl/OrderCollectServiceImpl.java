@@ -22,12 +22,12 @@ public class OrderCollectServiceImpl implements OrderCollectService {
 
     @Override
     public List<Object[]> getSuccess(String time, Integer code) {
-        return shopOrderRepository.kaihuSucess(time, code);
+        return shopOrderRepository.createAccountSuccess(time, code);
     }
 
     @Override
     public List<Object[]> getFail(String time, Integer code) {
-        return shopOrderRepository.kaihuFail(time, code);
+        return shopOrderRepository.createAccountFail(time, code);
     }
 
     @Override
@@ -36,20 +36,14 @@ public class OrderCollectServiceImpl implements OrderCollectService {
         String dateStr = DateUtils.parseDateToStr(date, DateUtils.DATE_FORMAT_YYYYMMDD);
         Map<String, ExcelPojo> map = new HashMap<>();
         for (Object[] sop : this.getSuccess(dateStr, code)) {
-            String owner = ((String) sop[0]).substring(0, 4);
-            if (map.containsKey(owner)) {
-                map.put(owner, new ExcelPojo(owner, map.get(owner).getSuccess() + ((BigInteger) sop[1]).intValue(), 0));
-            } else {
-                map.put(owner, new ExcelPojo(owner, ((BigInteger) sop[1]).intValue(), 0));
-            }
+            map.put((String)sop[0], new ExcelPojo((String)sop[0], ((BigInteger) sop[1]).intValue(),0));
         }
 
         for (Object[] sop : this.getFail(dateStr, code)) {
-            String owner = ((String) sop[1]).substring(0, 4);
-            if (map.containsKey(owner)) {
-                map.get(owner).setFail(map.get(owner).getFail()+((BigDecimal) sop[0]).intValue());
+            if (map.containsKey(sop[1])) {
+                map.get(sop[1]).setFail(((BigDecimal) sop[0]).intValue());
             } else {
-                map.put(owner, new ExcelPojo(owner, 0,((BigDecimal) sop[0]).intValue()));
+                map.put((String) sop[1], new ExcelPojo((String) sop[1], 0,((BigDecimal) sop[0]).intValue()));
             }
         }
         return map;
