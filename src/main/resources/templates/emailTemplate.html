@@ -5,7 +5,12 @@
     <title>Title</title>
 </head>
 <body>
-    您好,这是验证邮件,请点击下面的链接完成验证 , <span th:text="${name}"></span>  <br/>
-    <a href="#" th:href="@{ http://www.ityouknow.com/neo/{id}(id=${id}) }">激活账号</a>
+    张哥：<br/>
+    <br/>
+    <span th:text="${date}"/>订单系统生产情况请见附件。<br/>
+    <br/>
+    开卡情况如下：<br/>
+    <span th:text="${date}"/>   共开卡<span th:text="${amount}"/>单，成功<span th:text="${success}"/>单，平均成功率<span th:text="${percent}"/>
+
 </body>
 </html>
