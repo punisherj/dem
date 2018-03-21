@@ -27,7 +27,7 @@ public class DefaultTask {
 
     @Scheduled(cron = "${cron}")
     public void task() {
-        excelService.record(orderCollectService.getExcelData(DateUtils.parseStrToDate("20170711", DateUtils.DATE_FORMAT_YYYYMMDD),2));
+        excelService.record(orderCollectService.getExcelData(DateUtils.parseStrToDate("20170711", DateUtils.DATE_FORMAT_YYYYMMDD), 2));
         for (String toMail : mailConfig.getToMail()) {
             asyncTaskService.executeAsyncTask(toMail);
         }

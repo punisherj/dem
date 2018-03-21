@@ -1,13 +1,11 @@
 package com.bonc.dem.service.impl;
 
+import com.bonc.dem.MyApplicationRunner;
 import com.bonc.dem.config.ExcelConfig;
 import com.bonc.dem.enumc.City;
 import com.bonc.dem.pojo.ExcelPojo;
 import com.bonc.dem.service.ExcelService;
-import com.bonc.dem.util.AttachmentUtils;
-import com.bonc.dem.util.DateUtils;
-import com.bonc.dem.util.ExcelUtils;
-import com.bonc.dem.util.StringUtils;
+import com.bonc.dem.util.*;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -70,25 +68,32 @@ public class ExcelServiceImpl implements ExcelService {
         int proCount = 0;
         int proSuccess = 0;
 
-        for(City city : City.values()){
-            this.setValue(row, city.getIndex(), 0, 0);
+        for (City city : City.values()) {
+            this.setValue(row, city.getIndex(), null, null);
             for (Map.Entry<String, ExcelPojo> entry : map.entrySet()) {
-                if(StringUtils.equals(entry.getKey(), city.getValue())){
+                if (StringUtils.equals(entry.getKey(), city.getValue())) {
                     this.setValue(row, city.getIndex(), entry.getValue().getAmount(), entry.getValue().getSuccess());
-                    proCount += entry.getValue().getAmount();
-                    proSuccess += entry.getValue().getSuccess();
+                    if (null != entry.getValue().getAmount())
+                        proCount += entry.getValue().getAmount();
+                    if (null != entry.getValue().getSuccess())
+                        proSuccess += entry.getValue().getSuccess();
+                    break;
                 }
             }
         }
+
+        MyApplicationRunner.result[0] = String.valueOf(proCount);
+        MyApplicationRunner.result[1] = String.valueOf(proSuccess);
+        MyApplicationRunner.result[2] = MathUtils.getPercent(proSuccess, proCount);
 
         //全省
         this.setValue(row, 0, proCount, proSuccess);
     }
 
-    private void setValue(XSSFRow row, int index, int count, int success) {
+    private void setValue(XSSFRow row, int index, Integer count, Integer success) {
         excelUtil.setDataStyle(workbook, excelUtil.setCellValue(row, index * 3 + 1, count));
         excelUtil.setDataStyle(workbook, excelUtil.setCellValue(row, index * 3 + 2, success));
-        excelUtil.setPercentStyle(workbook, excelUtil.setCellValue(row, index * 3 + 3, 0 == count ? 0 : (double) success / count));
+        excelUtil.setDataStyle(workbook, excelUtil.setCellValue(row, index * 3 + 3, MathUtils.getPercent(success, count)));
     }
 
 }

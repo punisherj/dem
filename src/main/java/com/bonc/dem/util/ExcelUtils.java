@@ -1,6 +1,5 @@
 package com.bonc.dem.util;
 
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Component;
@@ -24,7 +23,7 @@ public class ExcelUtils {
         return workbook;
     }
 
-    public void createExcel(XSSFWorkbook workbook, String path) {
+    public boolean createExcel(XSSFWorkbook workbook, String path) {
 
         if (!new File(path).exists()) {
             new File(path.substring(0, path.lastIndexOf('/'))).mkdirs();
@@ -34,9 +33,14 @@ public class ExcelUtils {
             FileOutputStream out = new FileOutputStream(path);
             workbook.write(out);
             out.close();
+
+            if (new File(path).exists()) {
+                return true;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     public void delSheet(XSSFWorkbook workbook, int deleteSheetIndex) {
@@ -84,11 +88,11 @@ public class ExcelUtils {
         return ztStyle;
     }
 
-    public XSSFCellStyle setPercentStyle(XSSFWorkbook workbook, XSSFCell cell) {
-        XSSFCellStyle ztStyle = this.setDataStyle(workbook, cell);
-        ztStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0%"));
-        return ztStyle;
-    }
+    //public XSSFCellStyle setPercentStyle(XSSFWorkbook workbook, XSSFCell cell) {
+    //    XSSFCellStyle ztStyle = this.setDataStyle(workbook, cell);
+    //    ztStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0%"));
+    //    return ztStyle;
+    //}
 
     public XSSFCell setCellValue(XSSFRow row, Integer index, Object value) {
         //全省总量

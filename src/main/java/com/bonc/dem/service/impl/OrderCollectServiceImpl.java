@@ -36,14 +36,14 @@ public class OrderCollectServiceImpl implements OrderCollectService {
         String dateStr = DateUtils.parseDateToStr(date, DateUtils.DATE_FORMAT_YYYYMMDD);
         Map<String, ExcelPojo> map = new HashMap<>();
         for (Object[] sop : this.getSuccess(dateStr, code)) {
-            map.put((String)sop[0], new ExcelPojo((String)sop[0], ((BigInteger) sop[1]).intValue(),0));
+            map.put((String)sop[0], new ExcelPojo((String)sop[0], ((BigInteger) sop[1]).intValue(),null));
         }
 
         for (Object[] sop : this.getFail(dateStr, code)) {
             if (map.containsKey(sop[1])) {
                 map.get(sop[1]).setFail(((BigDecimal) sop[0]).intValue());
             } else {
-                map.put((String) sop[1], new ExcelPojo((String) sop[1], 0,((BigDecimal) sop[0]).intValue()));
+                map.put((String) sop[1], new ExcelPojo((String) sop[1], null,((BigDecimal) sop[0]).intValue()));
             }
         }
         return map;

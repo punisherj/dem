@@ -24,6 +24,11 @@ public class ExcelPojo {
     }
 
     public Integer getAmount() {
+        if(null == this.getSuccess()){
+            return this.getFail();
+        }else if(null == this.getFail()){
+            return this.getSuccess();
+        }
         return this.getSuccess()+this.getFail();
     }
 

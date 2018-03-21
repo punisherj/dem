@@ -29,15 +29,7 @@ public class ExcelConfig {
     }
 
     public String getAttachmentName(Date date) {
-        //return attachmentName;
-        return String.format(attachmentName, DateUtils.parseDateToStr(date, DateUtils.DATE_FORMAT_YYMMDD));
-    }
-    public String getAttachmentName() {
-        return attachmentName.replace("%s.xlsx","");
-    }
-
-    public void setAttachmentName(String attachment) {
-        this.attachmentName = attachmentName;
+        return attachmentName+ DateUtils.parseDateToStr(date, DateUtils.DATE_FORMAT_YYMMDD)+".xlsx";
     }
 
     public String getAttachmentPath() {
