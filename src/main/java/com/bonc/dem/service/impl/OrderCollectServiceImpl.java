@@ -1,6 +1,8 @@
 package com.bonc.dem.service.impl;
 
+import com.bonc.dem.entity.ExcelEntity;
 import com.bonc.dem.pojo.ExcelPojo;
+import com.bonc.dem.repository.ExcelRepository;
 import com.bonc.dem.repository.ShopOrderRepository;
 import com.bonc.dem.service.OrderCollectService;
 import com.bonc.dem.util.DateUtils;
@@ -20,6 +22,9 @@ public class OrderCollectServiceImpl implements OrderCollectService {
     @Autowired
     ShopOrderRepository shopOrderRepository;
 
+    @Autowired
+    ExcelRepository excelRepository;
+
     @Override
     public List<Object[]> getSuccess(String time, Integer code) {
         return shopOrderRepository.createAccountSuccess(time, code);
@@ -31,22 +36,28 @@ public class OrderCollectServiceImpl implements OrderCollectService {
     }
 
     @Override
-    public Map<String, ExcelPojo> getExcelData(Date date, Integer code) {
+    public void getExcelData(Date date, Integer code) {
 
-        String dateStr = DateUtils.parseDateToStr(date, DateUtils.DATE_FORMAT_YYYYMMDD);
+        String dateStr = DateUtils.parseDateToStr(date, DateUtils.DATE_FORMAT_YYYY_MM_DD);
         Map<String, ExcelPojo> map = new HashMap<>();
         for (Object[] sop : this.getSuccess(dateStr, code)) {
-            map.put((String)sop[0], new ExcelPojo((String)sop[0], ((BigInteger) sop[1]).intValue(),null));
+            map.put((String) sop[0], new ExcelPojo((String) sop[0], ((BigInteger) sop[1]).intValue(), null));
         }
 
         for (Object[] sop : this.getFail(dateStr, code)) {
             if (map.containsKey(sop[1])) {
                 map.get(sop[1]).setFail(((BigDecimal) sop[0]).intValue());
             } else {
-                map.put((String) sop[1], new ExcelPojo((String) sop[1], null,((BigDecimal) sop[0]).intValue()));
+                map.put((String) sop[1], new ExcelPojo((String) sop[1], null, ((BigDecimal) sop[0]).intValue()));
             }
         }
-        return map;
+        this.saveExcel(map, dateStr);
     }
 
+    private void saveExcel(Map<String, ExcelPojo> map, String date) {
+        for (Map.Entry<String, ExcelPojo> entry : map.entrySet()) {
+            ExcelPojo ep = entry.getValue();
+            excelRepository.save(new ExcelEntity(ep.getAmount(), ep.getSuccess(), ep.getCity(), date));
+        }
+    }
 }

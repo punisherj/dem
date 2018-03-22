@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 
 @Component
 public class DefaultTask {
@@ -27,7 +29,9 @@ public class DefaultTask {
 
     @Scheduled(cron = "${cron}")
     public void task() {
-        excelService.record(orderCollectService.getExcelData(DateUtils.parseStrToDate("20170711", DateUtils.DATE_FORMAT_YYYYMMDD), 2));
+        Date date = DateUtils.parseStrToDate("20170711", DateUtils.DATE_FORMAT_YYYYMMDD);
+        orderCollectService.getExcelData(date,2);
+        excelService.makeExcel();
         for (String toMail : mailConfig.getToMail()) {
             asyncTaskService.executeAsyncTask(toMail);
         }
