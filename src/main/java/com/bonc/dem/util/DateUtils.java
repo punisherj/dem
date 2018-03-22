@@ -426,18 +426,16 @@ public class DateUtils {
     /**
      * 获得指定日期的前一天
      *
-     * @param  dateStr  要求日期格式为yyyy-MM-dd
+     * @param  dateStr  要求日期格式为yyyyMMdd
      *  @return
      */
     public static String getYesterday(String dateStr) {
         Calendar c = Calendar.getInstance();
-        Date date = DateUtils.parseStrToDate(dateStr, DateUtils.DATE_FORMAT_YYYY_MM_DD);
+        Date date = DateUtils.parseStrToDate(dateStr, DateUtils.DATE_FORMAT_YYYYMMDD);
         c.setTime(date);
         int day = c.get(Calendar.DATE);
         c.set(Calendar.DATE, day - 1);
-
-        String dayBefore = new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
-        return dayBefore;
+        return DateUtils.parseDateToStr(c.getTime(),DateUtils.DATE_FORMAT_YYYYMMDD);
     }
 
     public static void main(String[] args) {

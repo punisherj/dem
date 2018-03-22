@@ -1,5 +1,5 @@
 package com.bonc.dem.service;
 
 public interface MailService {
-    void sendAttachmentsMail(String to, String subject);
+    void sendAttachmentsMail(String to, String subject, String date);
 }

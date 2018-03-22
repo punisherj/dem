@@ -4,7 +4,6 @@ import com.bonc.dem.MyApplicationRunner;
 import com.bonc.dem.config.ExcelConfig;
 import com.bonc.dem.config.MailConfig;
 import com.bonc.dem.service.MailService;
-import com.bonc.dem.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import org.thymeleaf.context.Context;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
-import java.util.Date;
 
 @Service
 public class MailServiceImpl implements MailService {
@@ -37,22 +35,22 @@ public class MailServiceImpl implements MailService {
     private TemplateEngine templateEngine;
 
     @Override
-    public void sendAttachmentsMail(String to, String subject) {
+    public void sendAttachmentsMail(String to, String subject, String date) {
         MimeMessage message = mailSender.createMimeMessage();
 
         try {
 
             Context context = new Context();
-            context.setVariable("date", DateUtils.parseDateToStr(new Date(),DateUtils.DATE_FORMAT_YYYY_MM_DD));
+            context.setVariable("date", date);
             context.setVariable("amount", MyApplicationRunner.result[0]);
             context.setVariable("success", MyApplicationRunner.result[1]);
-            context.setVariable("percent",MyApplicationRunner.result[2]);
+            context.setVariable("percent", MyApplicationRunner.result[2]);
             String emailContent = templateEngine.process("emailTemplate", context);
 
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setFrom(mailconfig.getFromMail());
             helper.setTo(to);
-            helper.setSubject(subject);
+            helper.setSubject(subject + date);
             helper.setText(emailContent, true);
 
             //File[] fileArrays = AttachmentUtils.getAttachDir().listFiles();
@@ -62,9 +60,9 @@ public class MailServiceImpl implements MailService {
             //    helper.addAttachment(fileName, file);
             //}
 
-            File attachment = new File(excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(new Date()));
+            File attachment = new File(excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(date));
             FileSystemResource file = new FileSystemResource(new File(attachment.getAbsolutePath()));
-            helper.addAttachment(excelConfig.getAttachmentName(new Date()), file);
+            helper.addAttachment(excelConfig.getAttachmentName(date), file);
 
             mailSender.send(message);
             logger.info("带附件的邮件已经发送。");

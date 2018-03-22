@@ -26,11 +26,11 @@ public class DefaultTask {
 
     @Scheduled(cron = "${cron}")
     public void task() {
-        String date = "2017-7-11";
+        String date = "2017-07-11";
         orderCollectService.getExcelData(date,2);
         excelService.makeExcel(date);
         for (String toMail : mailConfig.getToMail()) {
-            asyncTaskService.executeAsyncTask(toMail);
+            asyncTaskService.executeAsyncTask(toMail, date);
         }
     }
 }

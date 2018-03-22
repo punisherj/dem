@@ -1,5 +1,5 @@
 package com.bonc.dem.service;
 
 public interface AsyncTaskService {
-    void executeAsyncTask(String toMail);
+    void executeAsyncTask(String toMail, String date);
 }

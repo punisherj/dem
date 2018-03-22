@@ -33,7 +33,7 @@ public class ExcelConfig {
     }
 
     public String getAttachmentName(String date) {
-        return attachmentName + date + ".xlsx";
+        return attachmentName + date.replace("-","").substring(4) + ".xlsx";
     }
 
     public String getAttachmentPath() {
