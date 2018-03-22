@@ -12,8 +12,8 @@ public interface ShopOrderRepository extends JpaRepository<ShopOrderEntity, BigI
     @Query(value =
             "SELECT t.area_name , count(*) " +
                     "FROM oc_shop_order t " +
-                    "WHERE DATE_FORMAT(t.prov_order_time , '%Y%m%d') = ?1 AND t.cb_order_status_code = ?2 " +
-                    "GROUP BY DATE_FORMAT(t.create_date , '%Y%m%d'), t.area_name",
+                    "WHERE DATE_FORMAT(t.prov_order_time , '%Y-%m-%d') = ?1 AND t.cb_order_status_code = ?2 " +
+                    "GROUP BY DATE_FORMAT(t.create_date , '%Y-%m-%d'), t.area_name",
             nativeQuery = true)
     List<Object[]> createAccountSuccess(String time, Integer code);
 
@@ -23,24 +23,24 @@ public interface ShopOrderRepository extends JpaRepository<ShopOrderEntity, BigI
                         " a.area_name, " +
                         " MAX(a.cb_order_status_code) , " +
                         " COUNT(*) cc ," +
-                        " DATE_FORMAT(a.prov_order_time , '%Y%m%d') dd " +
+                        " DATE_FORMAT(a.prov_order_time , '%Y-%m-%d') dd " +
                     " FROM oc_shop_order a WHERE " +
-                        " DATE_FORMAT(a.prov_order_time , '%Y%m%d') = ?1 " +
+                        " DATE_FORMAT(a.prov_order_time , '%Y-%m-%d') = ?1 " +
                         " AND a.cb_order_status_code <> ?2" +
                     " GROUP BY" +
-                        " DATE_FORMAT(a.prov_order_time , '%Y%m%d') ," +
+                        " DATE_FORMAT(a.prov_order_time , '%Y-%m-%d') ," +
                         " a.area_name" +
                         " UNION ALL " +
                         " SELECT " +
                         " a.area_name ," +
                         " MAX(a.cb_order_status_code) ," +
                         " COUNT(*) cc ," +
-                        " DATE_FORMAT(a.prov_order_time , '%Y%m%d') " +
+                        " DATE_FORMAT(a.prov_order_time , '%Y-%m-%d') " +
                     " FROM oc_shop_order_bak a WHERE " +
-                        "DATE_FORMAT(a.prov_order_time , '%Y%m%d') = ?1 " +
+                        "DATE_FORMAT(a.prov_order_time , '%Y-%m-%d') = ?1 " +
                         "AND a.cb_order_status_code = '-1'" +
                     " GROUP BY " +
-                        " DATE_FORMAT(a.prov_order_time , '%Y%m%d') , " +
+                        " DATE_FORMAT(a.prov_order_time , '%Y-%m-%d') , " +
                         " a.area_name " +
                     " ) aaa " +
                     " GROUP BY " +

@@ -20,7 +20,7 @@ public interface ExcelRepository extends JpaRepository<ExcelEntity, BigInteger> 
     @Query(value="select sum(success) from oc_excel where city = ?1 and date like ?2",nativeQuery = true)
     Integer findSuccessByCityAndMonth(String city, String date);
 
-    @Query(value="select date from oc_excel where date like ?1 GROUP BY date desc",nativeQuery = true)
+    @Query(value="select date from oc_excel where date like ?1 GROUP BY date asc",nativeQuery = true)
     List<String> findAllDate(String date);
 
     @Query(value = "delete from oc_excel where date = ?1 ", nativeQuery = true)

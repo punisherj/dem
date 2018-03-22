@@ -7,4 +7,12 @@ public class StringUtils {
         }
         return false;
     }
+
+    public static String getDateStrMonth(String date){
+        return date.substring(5,7);
+    }
+
+    public static String getDateStrDay(String date){
+        return date.substring(date.length()-2 ,date.length());
+    }
 }

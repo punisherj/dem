@@ -57,14 +57,21 @@ public class ExcelUtils {
         workbook.setSheetHidden(0, true);
     }
 
-    public Integer getLastRow(XSSFSheet sheet) {
-        return sheet.getLastRowNum() + 1;
-    }
 
     public void setDateStyle(XSSFWorkbook workbook, XSSFCell cell) {
         XSSFCellStyle ztStyle = this.setDataStyle(workbook, cell);
         ztStyle.setFillForegroundColor(IndexedColors.GOLD.getIndex());
         ztStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        Font ztFont = workbook.createFont();
+        ztFont.setBold(true);
+        ztFont.setFontHeightInPoints((short) 11);
+        ztFont.setFontName("微软雅黑");
+        ztStyle.setFont(ztFont);
+        cell.setCellStyle(ztStyle);
+    }
+
+    public void setCountStyle(XSSFWorkbook workbook, XSSFCell cell) {
+        XSSFCellStyle ztStyle = this.setDataStyle(workbook, cell);
         Font ztFont = workbook.createFont();
         ztFont.setBold(true);
         ztFont.setFontHeightInPoints((short) 11);
@@ -87,12 +94,6 @@ public class ExcelUtils {
         cell.setCellStyle(ztStyle);
         return ztStyle;
     }
-
-    //public XSSFCellStyle setPercentStyle(XSSFWorkbook workbook, XSSFCell cell) {
-    //    XSSFCellStyle ztStyle = this.setDataStyle(workbook, cell);
-    //    ztStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0%"));
-    //    return ztStyle;
-    //}
 
     public XSSFCell setCellValue(XSSFRow row, Integer index, Object value) {
         //全省总量

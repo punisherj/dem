@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -32,42 +31,36 @@ public class ExcelServiceImpl implements ExcelService {
 
     XSSFWorkbook workbook;
 
-
-    /***
-     *  1.先判断附件区有无要发送的附件
-     *          有：前一天的excel位模板继续写    无：clone模板继续写
-     *
-     */
     @Override
-    public void makeExcel() {
+    public void makeExcel(String date) {
 
-        if (!AttachmentUtils.isFileExist(excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(DateUtils.getYesterday()))) {
+        if (!AttachmentUtils.isFileExist(excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(DateUtils.getYesterday(date)))) {
             workbook = excelUtil.getWorkbook(AttachmentUtils.getResourceDir("templates/" + excelConfig.getTemplatesName()));
-            excelUtil.getNewSheet(workbook, String.format("%d月订单生产量明细", DateUtils.getMonth(new Date())));
+            excelUtil.getNewSheet(workbook, String.format("%s月订单生产量明细", StringUtils.getDateStrMonth(date)));
         } else {
-            workbook = excelUtil.getWorkbook(new File(excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(DateUtils.getYesterday())));
+            workbook = excelUtil.getWorkbook(new File(excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(DateUtils.getYesterday(date))));
         }
 
         //获取日期判断是本月第一天就新起sheet
-        if (1 == DateUtils.getDay(new Date())) {
-            excelUtil.getNewSheet(workbook, String.format("%d月订单生产量明细", DateUtils.getMonth(new Date())));
+        if (StringUtils.equals("01", StringUtils.getDateStrDay(date))) {
+            excelUtil.getNewSheet(workbook, String.format("%s月订单生产量明细", StringUtils.getDateStrMonth(date)));
         }
 
-        List<String> days = excelRepository.findAllDate("201707%");
-        int rowIndex = workbook.getSheetAt(workbook.getActiveSheetIndex()).getLastRowNum();
-        for (String day : days) {
+        //int rowIndex = workbook.getSheetAt(workbook.getActiveSheetIndex()).getLastRowNum();
+        int rowIndex = 2;
+        for (String day : excelRepository.findAllDate(date.substring(0, date.length() - 2) + "%")) {
             writeOneLine(rowIndex, day);
-            rowIndex ++;
+            rowIndex++;
         }
-        writeCount(rowIndex);
-        excelUtil.createExcel(workbook, excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(new Date()));
+        writeCount(rowIndex, date.substring(0, date.length() - 2) + "%");
+        excelUtil.createExcel(workbook, excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(date));
     }
 
     private void writeOneLine(int rowIndex, String day) {
         XSSFSheet sheet = workbook.getSheetAt(workbook.getActiveSheetIndex());
         XSSFRow row = sheet.createRow(rowIndex);
         //日期
-        XSSFCell cell0 = excelUtil.setCellValue(row, 0, day);
+        XSSFCell cell0 = excelUtil.setCellValue(row, 0, day.replace("-","/"));
         excelUtil.setDateStyle(workbook, cell0);
 
         int proCount = 0;
@@ -97,13 +90,12 @@ public class ExcelServiceImpl implements ExcelService {
         this.setValue(row, 0, proCount, proSuccess);
     }
 
-    private void writeCount(int rowIndex) {
-        String date = "201707%";
+    private void writeCount(int rowIndex, String date) {
         XSSFSheet sheet = workbook.getSheetAt(workbook.getActiveSheetIndex());
         XSSFRow row = sheet.createRow(rowIndex);
         //本月合计
         XSSFCell cell0 = excelUtil.setCellValue(row, 0, "本月合计");
-        excelUtil.setDataStyle(workbook, cell0);
+        excelUtil.setCountStyle(workbook, cell0);
 
         int proCount = 0;
         int proSuccess = 0;

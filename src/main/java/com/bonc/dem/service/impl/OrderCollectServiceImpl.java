@@ -5,13 +5,11 @@ import com.bonc.dem.pojo.ExcelPojo;
 import com.bonc.dem.repository.ExcelRepository;
 import com.bonc.dem.repository.ShopOrderRepository;
 import com.bonc.dem.service.OrderCollectService;
-import com.bonc.dem.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +34,8 @@ public class OrderCollectServiceImpl implements OrderCollectService {
     }
 
     @Override
-    public void getExcelData(Date date, Integer code) {
+    public void getExcelData(String dateStr, Integer code) {
 
-        String dateStr = DateUtils.parseDateToStr(date, DateUtils.DATE_FORMAT_YYYY_MM_DD);
         Map<String, ExcelPojo> map = new HashMap<>();
         for (Object[] sop : this.getSuccess(dateStr, code)) {
             map.put((String) sop[0], new ExcelPojo((String) sop[0], ((BigInteger) sop[1]).intValue(), null));
