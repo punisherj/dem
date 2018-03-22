@@ -431,7 +431,7 @@ public class DateUtils {
      */
     public static String getYesterday(String dateStr) {
         Calendar c = Calendar.getInstance();
-        Date date = DateUtils.parseStrToDate(dateStr, DateUtils.DATE_FORMAT_YYYYMMDD);
+        Date date = DateUtils.parseStrToDate(dateStr, DateUtils.DATE_FORMAT_YYYY_MM_DD);
         c.setTime(date);
         int day = c.get(Calendar.DATE);
         c.set(Calendar.DATE, day - 1);
