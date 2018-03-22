@@ -34,15 +34,16 @@ public class ExcelServiceImpl implements ExcelService {
     @Override
     public void makeExcel(String date) {
 
-        if (!AttachmentUtils.isFileExist(excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(DateUtils.getYesterday(date)))) {
+        boolean isYesterdayExit = AttachmentUtils.isFileExist(excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(DateUtils.getYesterday(date)));
+
+        if (!isYesterdayExit) {
             workbook = excelUtil.getWorkbook(AttachmentUtils.getResourceDir("templates/" + excelConfig.getTemplatesName()));
-            excelUtil.getNewSheet(workbook, String.format("%s月订单生产量明细", StringUtils.getDateStrMonth(date)));
         } else {
             workbook = excelUtil.getWorkbook(new File(excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(DateUtils.getYesterday(date))));
         }
 
         //获取日期判断是本月第一天就新起sheet
-        if (StringUtils.equals("01", StringUtils.getDateStrDay(date))) {
+        if (!isYesterdayExit || StringUtils.equals("01", StringUtils.getDateStrDay(date))) {
             excelUtil.getNewSheet(workbook, String.format("%s月订单生产量明细", StringUtils.getDateStrMonth(date)));
         }
 
