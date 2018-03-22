@@ -34,7 +34,7 @@ public class OrderCollectServiceImpl implements OrderCollectService {
     }
 
     @Override
-    public void getExcelData(String dateStr, Integer code) {
+    public Integer getExcelData(String dateStr, Integer code) {
 
         Map<String, ExcelPojo> map = new HashMap<>();
         for (Object[] sop : this.getSuccess(dateStr, code)) {
@@ -49,6 +49,7 @@ public class OrderCollectServiceImpl implements OrderCollectService {
             }
         }
         this.saveExcel(map, dateStr);
+        return map.size();
     }
 
     private void saveExcel(Map<String, ExcelPojo> map, String date) {

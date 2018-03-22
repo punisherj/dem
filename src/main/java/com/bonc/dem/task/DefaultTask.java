@@ -25,12 +25,16 @@ public class DefaultTask {
     private OrderCollectService orderCollectService;
 
     @Scheduled(cron = "${cron}")
-    public void task() {
+    public void task() throws Exception {
         String date = "2017-07-11";
-        orderCollectService.getExcelData(date,2);
-        excelService.makeExcel(date);
-        for (String toMail : mailConfig.getToMail()) {
-            asyncTaskService.executeAsyncTask(toMail, date);
+        Integer count = orderCollectService.getExcelData(date, 2);
+        if (null != count && 0 != count.intValue()) {
+            excelService.makeExcel(date);
+            for (String toMail : mailConfig.getToMail()) {
+                asyncTaskService.executeAsyncTask(toMail, date);
+            }
+        }else{
+            throw new Exception("无法捕获该天的数据");
         }
     }
 }

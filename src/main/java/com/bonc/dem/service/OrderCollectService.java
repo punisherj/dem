@@ -6,5 +6,5 @@ public interface OrderCollectService {
 
     List<Object[]> getSuccess(String time, Integer code);
     List<Object[]> getFail(String time, Integer code);
-    void getExcelData(String date, Integer code);
+    Integer getExcelData(String date, Integer code);
 }
