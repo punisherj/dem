@@ -16,6 +16,6 @@ public class MailServiceImplTest {
 
     @Test
     public void sendTemplateMail() {
-        ms.sendTemplateMail("2431803430@qq.com","测试");
+        //ms.sendTemplateMail("2431803430@qq.com","测试");
     }
 }
