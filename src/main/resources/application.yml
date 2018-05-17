@@ -1,0 +1,62 @@
+spring:
+  mail:
+    password: kuijian@2
+    default-encoding: UTF-8
+    host: smtp.sina.com.cn
+    username: lovejoefirst@sina.cn
+  datasource:
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    minIdle: 5
+    validationQuery: SELECT 1 FROM DUAL
+    initialSize: 5
+    maxWait: 60000
+    poolPreparedStatements: true
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:log4jdbc:mysql://bj-cdb-3g086fv3.sql.tencentcdb.com:63657/oc?useUnicode=true&characterEncoding=UTF-8
+    maxPoolPreparedStatementPerConnectionSize: 20
+    password: kuijian4810
+    testOnBorrow: false
+    testWhileIdle: true
+    minEvictableIdleTimeMillis: 300000
+    timeBetweenEvictionRunsMillis: 60000
+    testOnReturn: false
+    driver-class-name: net.sf.log4jdbc.DriverSpy
+    maxActive: 20
+    username: root
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  messages:
+    encoding: UTF-8
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+server:
+  address: 127.0.0.1
+  tomcat:
+    uri-encoding: UTF-8
+  port: 8090
+
+logging:
+  level:
+    org:
+      springframework:
+        data: DEBUG
+
+template:
+  name: excelTemples.xlsx
+
+attachment:
+  name: 订单汇总
+  path: C:/abc/def
+
+task:
+  cron: 0 48 18 * * ?
+
+mail:
+  from: lovejoefirst@sina.cn
+  to: 2431803430@qq.com,bane_kj@163.com
+  subject: 测试测试
