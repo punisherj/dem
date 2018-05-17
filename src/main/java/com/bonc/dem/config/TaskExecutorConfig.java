@@ -11,9 +11,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.concurrent.Executor;
 
 @Configuration
-@ComponentScan("com.bonc.dem")
+@ComponentScan("com.bonc.dem.service.impl")
 @EnableAsync
-public class TaskExecutorConfig implements AsyncConfigurer { // 1
+public class TaskExecutorConfig implements AsyncConfigurer {
     @Override
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();

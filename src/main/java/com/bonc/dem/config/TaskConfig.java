@@ -1,21 +1,12 @@
 package com.bonc.dem.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@PropertySource("classpath:config/task.properties")
+@Data
+@ConfigurationProperties(prefix = "task")
 @Component
 public class TaskConfig {
-
-    @Value("${cron}")
     private String cron;
-
-    public String getCron() {
-        return cron;
-    }
-
-    public void setCron(String cron) {
-        this.cron = cron;
-    }
 }

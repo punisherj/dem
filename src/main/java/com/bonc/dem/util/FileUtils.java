@@ -5,9 +5,9 @@ import org.springframework.util.ResourceUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-public class AttachmentUtils {
+public class FileUtils {
 
-    public static File getResourceDir(String path) {
+    public static File getFileByPath(String path) {
         File file = null;
         try {
             file = ResourceUtils.getFile("classpath:" + path);

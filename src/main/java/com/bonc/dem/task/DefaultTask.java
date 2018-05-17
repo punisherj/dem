@@ -4,11 +4,12 @@ import com.bonc.dem.config.MailConfig;
 import com.bonc.dem.service.AsyncTaskService;
 import com.bonc.dem.service.ExcelService;
 import com.bonc.dem.service.OrderCollectService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-
+@Log4j2
 @Component
 public class DefaultTask {
 
@@ -24,13 +25,13 @@ public class DefaultTask {
     @Autowired
     private OrderCollectService orderCollectService;
 
-    @Scheduled(cron = "${cron}")
+    @Scheduled(cron = "${task.cron}")
     public void task() throws Exception {
         String date = "2017-07-11";
         Integer count = orderCollectService.getExcelData(date, 2);
         if (null != count && 0 != count.intValue()) {
             excelService.makeExcel(date);
-            for (String toMail : mailConfig.getToMail()) {
+            for (String toMail : mailConfig.getTo()) {
                 asyncTaskService.executeAsyncTask(toMail, date);
             }
         }else{

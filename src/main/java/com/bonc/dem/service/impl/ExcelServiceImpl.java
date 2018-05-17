@@ -1,7 +1,8 @@
 package com.bonc.dem.service.impl;
 
 import com.bonc.dem.MyApplicationRunner;
-import com.bonc.dem.config.ExcelConfig;
+import com.bonc.dem.config.AttachmentConfig;
+import com.bonc.dem.config.TemplateConfig;
 import com.bonc.dem.entity.ExcelEntity;
 import com.bonc.dem.enumc.City;
 import com.bonc.dem.repository.ExcelRepository;
@@ -16,30 +17,38 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ExcelServiceImpl implements ExcelService {
 
     @Autowired
-    ExcelConfig excelConfig;
+    private AttachmentConfig attachment;
 
     @Autowired
-    ExcelUtils excelUtil;
+    private TemplateConfig template;
 
     @Autowired
-    ExcelRepository excelRepository;
+    private ExcelUtils excelUtil;
+
+    @Autowired
+    private ExcelRepository excelRepository;
 
     XSSFWorkbook workbook;
 
     @Override
     public void makeExcel(String date) {
 
-        boolean isYesterdayExit = AttachmentUtils.isFileExist(excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(DateUtils.getYesterday(date)));
+        String attachmentPath = attachment.getPath();
+        String yesterdayFilePath = attachmentPath + attachment.getName(DateUtils.getYesterday(date));
+
+        boolean isYesterdayExit = FileUtils.isFileExist(yesterdayFilePath);
 
         if (!isYesterdayExit) {
-            workbook = excelUtil.getWorkbook(AttachmentUtils.getResourceDir("templates/" + excelConfig.getTemplatesName()));
+            workbook = excelUtil.getWorkbook(template.getTemplateFile());
         } else {
-            workbook = excelUtil.getWorkbook(new File(excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(DateUtils.getYesterday(date))));
+            workbook = excelUtil.getWorkbook(new File(yesterdayFilePath));
         }
 
         //获取日期判断是本月第一天就新起sheet
@@ -47,14 +56,13 @@ public class ExcelServiceImpl implements ExcelService {
             excelUtil.getNewSheet(workbook, String.format("%s月订单生产量明细", StringUtils.getDateStrMonth(date)));
         }
 
-        //int rowIndex = workbook.getSheetAt(workbook.getActiveSheetIndex()).getLastRowNum();
         int rowIndex = 2;
         for (String day : excelRepository.findAllDate(date.substring(0, date.length() - 2) + "%")) {
-            writeOneLine(rowIndex, day);
+            this.writeOneLine(rowIndex, day);
             rowIndex++;
         }
-        writeCount(rowIndex, date.substring(0, date.length() - 2) + "%");
-        excelUtil.createExcel(workbook, excelConfig.getAttachmentPath() + excelConfig.getAttachmentName(date));
+        this.writeCount(rowIndex, date.substring(0, date.length() - 2) + "%");
+        excelUtil.createExcel(workbook, attachmentPath + attachment.getName(date));
     }
 
     private void writeOneLine(int rowIndex, String day) {
@@ -67,25 +75,28 @@ public class ExcelServiceImpl implements ExcelService {
         int proCount = 0;
         int proSuccess = 0;
 
-        for (City city : City.values()) {
-            this.setValue(row, city.getIndex(), null, null);
-            List<ExcelEntity> list = excelRepository.findByDate(day);
-            for (ExcelEntity ee : list) {
-                if (StringUtils.equals(city.getValue(), ee.getCity())) {
-                    this.setValue(row, city.getIndex(), ee.getAmount(), ee.getSuccess());
-                    if (null != ee.getAmount())
-                        proCount += ee.getAmount();
+        List<ExcelEntity> list = excelRepository.findByDate(day);
+        Map<String, ExcelEntity> excelMap = list.stream().collect(Collectors.toMap(ExcelEntity::getCity, a -> a));
 
-                    if (null != ee.getSuccess())
-                        proSuccess += ee.getSuccess();
-                    break;
+        for (City city : City.values()) {
+            ExcelEntity ee = excelMap.get(city.getValue());
+            if(null != ee) {
+                this.setValue(row, city.getIndex(), ee.getAmount(), ee.getSuccess());
+                if (null != ee.getAmount()) {
+                    proCount += ee.getAmount();
                 }
+
+                if (null != ee.getSuccess()) {
+                    proSuccess += ee.getSuccess();
+                }
+            } else {
+                this.setValue(row, city.getIndex(), null, null);
             }
         }
 
-        MyApplicationRunner.result[0] = String.valueOf(proCount);
-        MyApplicationRunner.result[1] = String.valueOf(proSuccess);
-        MyApplicationRunner.result[2] = MathUtils.getPercent(proSuccess, proCount);
+        MyApplicationRunner.tc.setCount(String.valueOf(proCount));
+        MyApplicationRunner.tc.setSuccess(String.valueOf(proSuccess));
+        MyApplicationRunner.tc.setSuccessPercent(MathUtils.getPercent(proSuccess, proCount));
 
         //全省
         this.setValue(row, 0, proCount, proSuccess);
@@ -104,17 +115,15 @@ public class ExcelServiceImpl implements ExcelService {
         for (City city : City.values()) {
             Integer amount = excelRepository.findAmountByCityAndMonth(city.getValue(), date);
             Integer success = excelRepository.findSuccessByCityAndMonth(city.getValue(), date);
-            this.setValue(row,
-                    city.getIndex(),
-                    amount,
-                    success);
-            if (null != amount)
+            this.setValue(row, city.getIndex(), amount, success);
+            if (null != amount) {
                 proCount += amount;
+            }
 
-            if (null != success)
+            if (null != success) {
                 proSuccess += success;
+            }
         }
-
         this.setValue(row, 0, proCount, proSuccess);
     }
 
