@@ -1,9 +1,9 @@
 spring:
   mail:
-    password: kuijian@2
+    password:
     default-encoding: UTF-8
     host: smtp.sina.com.cn
-    username: lovejoefirst@sina.cn
+    username:
   datasource:
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
     minIdle: 5
@@ -14,7 +14,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:log4jdbc:mysql://bj-cdb-3g086fv3.sql.tencentcdb.com:63657/oc?useUnicode=true&characterEncoding=UTF-8
     maxPoolPreparedStatementPerConnectionSize: 20
-    password: kuijian4810
+    password:
     testOnBorrow: false
     testWhileIdle: true
     minEvictableIdleTimeMillis: 300000
@@ -57,6 +57,6 @@ task:
   cron: 0 48 18 * * ?
 
 mail:
-  from: lovejoefirst@sina.cn
-  to: 2431803430@qq.com,bane_kj@163.com
+  from:
+  to:
   subject: 测试测试
