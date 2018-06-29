@@ -27,7 +27,10 @@ public class DefaultTask {
 
     @Scheduled(cron = "${task.cron}")
     public void task() throws Exception {
+        //测试使用
         String date = "2017-07-11";
+        //正常使用
+        //String date = DateUtils.parseDateToStr(new Date(), DateUtils.DATE_FORMAT_YYYY_MM_DD);
         Integer count = orderCollectService.getExcelData(date, 2);
         if (null != count && 0 != count.intValue()) {
             excelService.makeExcel(date);
