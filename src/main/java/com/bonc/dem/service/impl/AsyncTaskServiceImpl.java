@@ -1,13 +1,15 @@
 package com.bonc.dem.service.impl;
 
 import com.bonc.dem.config.MailConfig;
-import com.bonc.dem.service.AsyncTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author xukj
+ */
 @Service
-public class AsyncTaskServiceImpl implements AsyncTaskService {
+public class AsyncTaskServiceImpl {
 
     @Autowired
     private MailServiceImpl mailService;
